@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="StyleCodificador.css">
+
+    
+
+
+    <title>ChallengeOneCodificador3</title>
+</head>
+<body>
+    <main>
+        <div class="cabecera">
+            <h1 class="titulo">Challenge ONE Codificador</h1>
+            <img class="imagen" src="LogoAlura.png" alt="ALURA" >
+        </div>
+        <form action="" class="formulario" id="formulario">
+           <!-- Grupo01: Ingreo Texto a encriptar -->
+			<div class="formulario__grupo formulario__grupo-correcto" id="grupo__texto">
+				<label for="texto" class="formulario__label"  >Ingrese su texto</label>
+
+				<div class="formulario__grupo-input">
+                    <textarea class="formulario__input clear" name="texto"  id="texto" placeholder="Su Texto aquí....."></textarea>
+                    <i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">El usuario solo puede ingresar, numeros y letras en minusculas.</p>
+            </div>
+
+			<!-- Grupo02: salida Texto encriptado-->
+			<div class="formulario__grupo " id="grupo__texto2">
+				<label for="texto2" class="formulario__label">Transcripción de su texto (*)</label>
+				<div class="formulario__grupo-input">
+                    <textarea class="formulario__input clear" name="texto2" id="texto2"  placeholder="Su Texto aquí....."></textarea>
+					<i class="formulario__validacion-estado fas fa-times-circle"></i>
+                    
+				</div>
+				<p class="formulario__input-error">Su mensaje encriptado.</p>
+            </div>
+
+            <div class="formulario__mensaje" id="formulario__mensaje">
+				<p><i class="fas fa-exclamation-triangle"></i> <b>Por favor:</b> rellena el formulario correctamente, sin mayuscula y sin caraceres especiales </p>
+			</div>
+
+        </form>
+            <div class="formulario__grupo formulario__grupo-btn-paquete">
+                <button onclick="encriptadorER();" type="submit" class="formulario__btn" id="prueba"><span>Encriptar</span></button>
+                <button onclick="desencriptarER();" type="submit" class="formulario__btn" id="prueba"><span>Desencriptar</span></button>
+                <button onclick="copiarAlPortaPapel();" type="submit" class="formulario__btn" id="prueba"><span>Copiar (*)</span></button>
+                <button onclick="limpiar();" type="submit" class="formulario__btn" id="prueba"><span>Limpiar</span></button>
+            </div>
+	</main>        
+    <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/033826ef17.js" crossorigin="anonymous"></script>
+    <script>
+        // ---------------- funcion limpiar --------------------------------
+        //-------------------------------------------------------------------
+        function limpiar(){
+            return document.getElementsByClassName("clear")[0].value="";
+            
+        }
+        //----------------- funcion boton copiar ----------------------------
+            function copiarAlPortaPapel(){
+                var textoCopi = document.getElementById('texto2');
+                texto2.select();
+                texto2.setSelectionRange(0, 99999);
+                document.execCommand('copy'); 
+            }
+        //---------------------------------------------------------------------
+        //----------------- Encriptar el mensaje con expresiones regulares ------
+            function encriptadorER(){
+                
+                const remplazo ={"e":"enter","i":"imes","a":"ai","o":"ober","u":"ufat"}
+                var text = document.getElementById("texto").value;
+                let resultado =text.replace(/[aeiou]/g, aux =>remplazo[aux]);
+                document.getElementById("texto2").innerHTML = resultado;
+                             
+            }
+        //---------------------------------------------------------------------
+                //----------------- Desncriptar el mensaje con expresiones regulares ------
+            function desencriptarER(){
+                
+                const remplazo ={"enter":"e","imes":"i","ai":"a","ober":"o","ufat":"u"}
+                var text = document.getElementById("texto").value;
+                let resultado =text.replace(/enter|imes|ai|ober|ufat/g, function(matched){
+                return remplazo[matched];
+                });
+                document.getElementById("texto2").innerHTML = resultado;
+                             
+            }
+        //---------------------------------------------------------------------
+
+
+        //----------------- modificadores para los Estilos y validacion de texto ingresado ---------------------
+        const formulario = document.getElementById('formulario');
+        const textareas = document.querySelectorAll('#formulario textarea'); //# por ser el ID
+        
+
+        const expresiones = {
+            	textoAprobado: /^[a-z0-9\s+]{1,9999}$/, // Letras min y numeros
+                numeros:/^[0-9]/
+            }
+
+                // name="texto" validar por el name del campo
+                //-- evento.target.name -- para ver que campo segun su name poder validad
+        const validarEntrada = (evento) => {
+            switch (evento.target.name){
+                case "texto":
+                    if(expresiones.textoAprobado.test(evento.target.value)){
+                        document.getElementById("grupo__texto").classList.remove("formulario__grupo-incorrecto");//quitar la clase en caso de sacar el error
+                        document.getElementById("grupo__texto").classList.add("formulario__grupo-correcto");
+                        document.querySelector('#grupo__texto i').classList.remove('fa-times-circle');
+                        document.querySelector("#grupo__texto i").classList.add("fa-check-circle");
+                        document.querySelector('#grupo__texto .formulario__input-error').classList.remove('formulario__input-error-activo');
+
+                    }else{
+                        document.getElementById("grupo__texto").classList.add("formulario__grupo-incorrecto");//agregar la clase en caso de error
+                        document.getElementById("grupo__texto").classList.remove("formulario__grupo-correcto");
+                        document.querySelector('#grupo__texto i').classList.add('fa-times-circle');
+                        document.querySelector("#grupo__texto i").classList.remove("fa-check-circle");
+                        document.querySelector('#grupo__texto .formulario__input-error').classList.add('formulario__input-error-activo');
+                        
+                    }
+                break;
+            }
+        }
+
+        textareas.forEach ((input) =>{
+            input.addEventListener("keyup", validarEntrada);//se ejecuta dentro del campo texto
+            input.addEventListener("blur", validarEntrada);//se ejecuta fuera del campo texto
+            });
+         //---------------------------------------------------------------------
+    </script>
+  
+</body>
